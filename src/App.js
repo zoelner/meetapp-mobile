@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 
 // import { Container } from './styles';
 
-export default function App() {
-  return (
-    <View>
-      <Text>First Page</Text>
-    </View>
-  );
+import createRouter from './routes';
+
+function App() {
+  const Routes = createRouter(false);
+
+  return <Routes />;
 }
+
+export default App;
