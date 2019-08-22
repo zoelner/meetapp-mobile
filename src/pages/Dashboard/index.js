@@ -1,9 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { format } from 'date-fns';
+import { format, subDays, addDays } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+
 import Background from '~/components/Background';
+import Meetup from '~/components/Meetup';
+import Header from '~/components/Header';
+import api from '~/services/api';
 
 import {
   Container,
@@ -12,42 +16,39 @@ import {
   DateSelected,
   MeetupsList,
 } from './styles';
-import Meetup from '~/components/Meetup';
-import Header from '~/components/Header';
 
 function Dashboard() {
-  const [meetups, setMeetups] = useState([
-    {
-      id: 1,
-      title: 'Desenvolvimento React Native',
-      date: new Date().toISOString(),
-      user: { name: 'Everton Zoelner' },
-      location: 'UniBrasil',
-      banner: {
-        url: 'https://api.adorable.io/avatars/285/zoel@adorable.png',
-      },
-    },
-    {
-      id: 2,
-      title: 'MeetApp',
-      date: new Date().toISOString(),
-      user: { name: 'Everton ' },
-      location: 'Minha Casa',
-      banner: {
-        url: 'https://api.adorable.io/avatars/285/abott@adorable.png',
-      },
-    },
-  ]);
+  const [date, setDate] = useState(new Date());
+  const [meetups, setMeetups] = useState([]);
+
+  useEffect(() => {
+    async function loadMeetups() {
+      console.tron.log(date.toISOString());
+      const response = await api.get('meetups', {
+        params: {
+          date: date.toISOString(),
+        },
+      });
+
+      setMeetups(response.data);
+    }
+
+    loadMeetups();
+  }, [date]);
 
   const dateFormatted = useMemo(() => {
-    return format(new Date(), "d 'de' MMMM'", {
+    return format(date, "d 'de' MMMM'", {
       locale: pt,
     });
-  }, []);
+  }, [date]);
 
-  function decrementDate() {}
+  function decrementDate() {
+    setDate(subDays(date, 1));
+  }
 
-  function incrementeDate() {}
+  function incrementeDate() {
+    setDate(addDays(date, 1));
+  }
 
   return (
     <Background>
