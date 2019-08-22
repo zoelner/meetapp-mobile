@@ -1,51 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { withNavigationFocus } from 'react-navigation';
 
 import Background from '~/components/Background';
 
 import { Container, MeetupsList } from './styles';
 import Meetup from '~/components/Meetup';
 import Header from '~/components/Header';
+import api from '~/services/api';
 
-function Subscribe() {
-  const [meetups, setMeetups] = useState([
-    {
-      id: 1,
-      title: 'Desenvolvimento React Native',
-      date: new Date().toISOString(),
-      user: { name: 'Everton Zoelner' },
-      location: 'UniBrasil',
-      banner: {
-        url: 'https://api.adorable.io/avatars/285/zoel@adorable.png',
-      },
-    },
-    {
-      id: 2,
-      title: 'Desenvolvimento React Native',
-      date: new Date().toISOString(),
-      user: { name: 'Everton Zoelner' },
-      location: 'UniBrasil',
-      banner: {
-        url: 'https://api.adorable.io/avatars/285/zoel@adorable.png',
-      },
-    },
-  ]);
+function Subscribe({ isFocused }) {
+  const [subscriptions, setSubscriptions] = useState([]);
 
-  function decrementDate() {}
+  async function loadSubscriptions() {
+    const response = await api.get('subscriptions');
+    setSubscriptions(response.data);
+  }
 
-  function incrementeDate() {}
+  useEffect(() => {
+    if (isFocused) {
+      loadSubscriptions();
+    }
+  }, [isFocused]);
+
+  async function handleSubscription(subscriptionId) {
+    try {
+      await api.delete(`subscriptions/${subscriptionId}`);
+      setSubscriptions(
+        subscriptions.filter(subscription => subscription.id !== subscriptionId)
+      );
+      Alert.alert('Sucesso!', 'Inscrição removida com sucesso');
+    } catch (err) {
+      Alert.alert('Erro na exclusão de inscrição', err.response.data.error);
+    }
+  }
 
   return (
     <Background>
       <Header />
       <Container>
         <MeetupsList
-          data={meetups}
+          data={subscriptions}
           renderItem={({ item }) => (
             <Meetup
-              data={item}
+              data={item.meetup}
               action="Cancelar Inscrição"
-              onPress={() => {}}
+              onPress={() => handleSubscription(item.id)}
             />
           )}
           keyExtractor={item => String(item.id)}
@@ -62,4 +63,4 @@ Subscribe.navigationOptions = {
   ),
 };
 
-export default Subscribe;
+export default withNavigationFocus(Subscribe);

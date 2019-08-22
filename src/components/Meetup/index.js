@@ -26,7 +26,7 @@ function Meetup({ data, action, onPress }) {
 
   return (
     <Container>
-      <Banner source={{ uri: data.banner.url }} />
+      <Banner source={{ uri: data.image.url }} />
 
       <Content>
         <Title>{data.title}</Title>
@@ -62,7 +62,7 @@ Meetup.propTypes = {
     user: PropTypes.shape({
       name: PropTypes.string,
     }),
-    banner: PropTypes.shape({
+    image: PropTypes.shape({
       url: PropTypes.string,
     }),
   }).isRequired,

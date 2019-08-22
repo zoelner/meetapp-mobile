@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import logo from '~/assets/images/logo.png';
@@ -14,14 +15,18 @@ import {
   SignLink,
   SignLinkText,
 } from './styles';
+import { signInRequest } from '~/store/modules/auth/actions';
 
 function SignIn({ navigation }) {
+  const dispatch = useDispatch();
   const passwordRef = useRef();
 
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  function handleSubmit() {}
+  function handleSubmit() {
+    dispatch(signInRequest(email, password));
+  }
 
   return (
     <Background>

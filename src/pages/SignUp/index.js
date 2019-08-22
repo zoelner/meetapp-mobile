@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Image } from 'react-native';
 
 import logo from '~/assets/images/logo.png';
 
 import Background from '~/components/Background';
+import { signUpRequest } from '~/store/modules/auth/actions';
 
 import {
   Container,
@@ -15,6 +17,7 @@ import {
 } from './styles';
 
 function SignUp({ navigation }) {
+  const dispatch = useDispatch();
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -22,9 +25,11 @@ function SignUp({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const loading = false;
+  const loading = useSelector(state => state.auth.loading);
 
-  function handleSubmit() {}
+  function handleSubmit() {
+    dispatch(signUpRequest(name, email, password));
+  }
 
   return (
     <Background>
