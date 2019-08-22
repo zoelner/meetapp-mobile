@@ -1,6 +1,6 @@
 import React from 'react';
 
-// import { Container } from './styles';
+import '~/config/ReactotronConfig';
 
 import createRouter from './routes';
 
